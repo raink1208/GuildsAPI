@@ -6,6 +6,7 @@ namespace rain1208\guildsAPI\utils;
 
 use pocketmine\plugin\PluginLogger;
 use rain1208\guildsAPI\guilds\Guild;
+use rain1208\guildsAPI\guilds\GuildPlayer;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use SQLite3;
@@ -72,14 +73,44 @@ class SQLiteDatabase
      */
     public function getGuildMember($id): array
     {
-        $result = [];
+        if ($id instanceof GuildId) {
+            $id = $id->getValue();
+        }
 
-        $stmt = $this->db->query("SELECT id FROM players WHERE guild_id=:guild_id");
+        $stmt = $this->db->prepare("SELECT id FROM players WHERE guild_id=:guild_id");
+
+        $stmt->bindValue(":guild_id", $id);
+
+        $stmt = $stmt->execute();
+
+        $result = [];
 
         while ($res = $stmt->fetchArray(SQLITE3_ASSOC)) {
             $result[] = $res["id"];
         }
 
         return $result;
+    }
+
+    public function createGuildPlayerData(GuildPlayer $player)
+    {
+        $stmt = $this->db->prepare("INSERT INTO players (id, guild_id, permission) VALUES (:id, :guild_id, :permission)");
+
+        $stmt->bindValue(":id", $player->getName());
+        $stmt->bindValue(":guild_id", $player->getGuildId()->getValue());
+        $stmt->bindValue(":permission", $player->getPermission());
+
+        $stmt->execute();
+    }
+
+    public function getGuildPlayerData(string $name): ?array
+    {
+        $stmt = $this->db->prepare("SELECT players.id, guild_id, permission, g.name FROM players left outer join guilds g on players.guild_id = g.id WHERE players.id=:name");
+
+        $stmt->bindValue(":name", $name);
+
+        $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+
+        return $result !== false ? $result : null;
     }
 }
