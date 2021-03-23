@@ -11,6 +11,6 @@ class EventListener implements Listener
 {
     public function onJoin(PlayerJoinEvent $event)
     {
-
+        Main::getInstance()->getGuildPlayerManager()->loadPlayer($event->getPlayer()->getName());
     }
 }

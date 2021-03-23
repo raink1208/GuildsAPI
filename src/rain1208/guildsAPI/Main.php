@@ -5,8 +5,8 @@ namespace rain1208\guildsAPI;
 
 
 use pocketmine\plugin\PluginBase;
-use pocketmine\Server;
 use rain1208\guildsAPI\guilds\GuildManager;
+use rain1208\guildsAPI\guilds\GuildPlayerManager;
 use rain1208\guildsAPI\utils\ConfigManager;
 use rain1208\guildsAPI\utils\SQLiteDatabase;
 
@@ -17,7 +17,7 @@ class Main extends PluginBase
     private SQLiteDatabase $database;
 
     private GuildManager $guildManager;
-
+    private GuildPlayerManager $guildPlayerManager;
     private ConfigManager $configManager;
 
     public function onEnable()
@@ -26,7 +26,10 @@ class Main extends PluginBase
 
         $this->database = new SQLiteDatabase($this);
         $this->guildManager = new GuildManager();
+        $this->guildPlayerManager = new GuildPlayerManager();
         $this->configManager = new ConfigManager();
+
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
     }
 
     public function onDisable()
@@ -47,6 +50,11 @@ class Main extends PluginBase
     public function getGuildManager(): GuildManager
     {
         return $this->guildManager;
+    }
+
+    public function getGuildPlayerManager(): GuildPlayerManager
+    {
+        return $this->guildPlayerManager;
     }
 
     public function getConfigManager(): ConfigManager
