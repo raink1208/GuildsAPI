@@ -4,6 +4,7 @@
 namespace rain1208\guildsAPI\guilds;
 
 
+use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use rain1208\guildsAPI\models\GuildLevel;
 
@@ -17,14 +18,17 @@ class Guild
     private string $owner;
     private array $members;
 
+    private array $wait;
+
     /**
      * @param GuildId $guildId
      * @param string $name
      * @param GuildLevel $guildLevel
      * @param string $owner
      * @param string[] $member
+     * @param array $wait
      */
-    public function __construct(GuildId $guildId, string $name, GuildLevel $guildLevel, string $owner, array $member)
+    public function __construct(GuildId $guildId, string $name, GuildLevel $guildLevel, string $owner, array $member = [], array $wait = [])
     {
         $this->name = $name;
 
@@ -33,6 +37,7 @@ class Guild
 
         $this->owner = $owner;
         $this->members = $member;
+        $this->wait = $wait;
     }
 
     public function getName(): string
@@ -48,6 +53,26 @@ class Guild
     public function getGuildLevel(): GuildLevel
     {
         return $this->guildLevel;
+    }
+
+    public function join(GuildPlayer $player)
+    {
+
+    }
+
+    public function accept(string $player)
+    {
+
+    }
+
+    public function leave(GuildPlayer $player)
+    {
+
+    }
+
+    public function getAllGuildMember(): array
+    {
+        return Main::getInstance()->getDatabase()->getGuildMember($this->guildId);
     }
 
     public function addExp(int $exp)

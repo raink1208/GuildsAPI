@@ -69,7 +69,7 @@ class SQLiteDatabase
 
     /**
      * @param int|GuildId $id
-     * @return string[]
+     * @return array
      */
     public function getGuildMember($id): array
     {
@@ -77,9 +77,36 @@ class SQLiteDatabase
             $id = $id->getValue();
         }
 
-        $stmt = $this->db->prepare("SELECT id FROM players WHERE guild_id=:guild_id");
+        $stmt = $this->db->prepare("SELECT id, permission FROM players WHERE guild_id=:guild_id");
 
         $stmt->bindValue(":guild_id", $id);
+
+        $stmt = $stmt->execute();
+
+        $result = [];
+
+        while ($res = $stmt->fetchArray(SQLITE3_ASSOC)) {
+            $result[$res["permission"]][] = $res["id"];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param int|GuildId $id
+     * @param int $permission
+     * @return array
+     */
+    public function getGuildMemberByPermission($id, int $permission): array
+    {
+        if ($id instanceof GuildId) {
+            $id = $id->getValue();
+        }
+
+        $stmt = $this->db->prepare("SELECT id FROM players WHERE guild_id=:guild_id AND permission=:permission");
+
+        $stmt->bindValue(":guild_id", $id);
+        $stmt->bindValue(":permission", $permission);
 
         $stmt = $stmt->execute();
 
