@@ -10,7 +10,6 @@ use rain1208\guildsAPI\guilds\GuildPlayer;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use SQLite3;
-use SQLite3Stmt;
 
 class SQLiteDatabase
 {
@@ -41,7 +40,7 @@ class SQLiteDatabase
         $stmt->bindValue(":level", $guild->getGuildLevel()->getLevel());
         $stmt->bindValue(":exp", $guild->getGuildLevel()->getExp());
 
-        $this->asyncExecute($stmt);
+        $stmt->execute();
     }
 
     public function saveGuildData(Guild $guild)
@@ -52,7 +51,7 @@ class SQLiteDatabase
         $stmt->bindValue(":level", $guild->getGuildLevel()->getLevel());
         $stmt->bindValue(":exp", $guild->getGuildLevel()->getExp());
 
-        $this->asyncExecute($stmt);
+        $stmt->execute();
     }
 
     public function getAllGuildData(): array
@@ -128,7 +127,7 @@ class SQLiteDatabase
         $stmt->bindValue(":guild_id", $player->getGuildId()->getValue());
         $stmt->bindValue(":permission", $player->getPermission());
 
-        $this->asyncExecute($stmt);
+        $stmt->execute();
     }
 
     public function savePlayerData(GuildPlayer $player)
@@ -139,7 +138,7 @@ class SQLiteDatabase
         $stmt->bindValue(":guild_id", $player->getGuildId()->getValue());
         $stmt->bindValue(":permission", $player->getPermission());
 
-        $this->asyncExecute($stmt);
+        $stmt->execute();
     }
 
     public function getGuildPlayerData(string $name): ?array
@@ -164,10 +163,5 @@ class SQLiteDatabase
         }
 
         return $result;
-    }
-
-    private function asyncExecute(SQLite3Stmt $stmt)
-    {
-        Main::getInstance()->getServer()->getAsyncPool()->submitTask(new SQLExecutionTask($stmt));
     }
 }
