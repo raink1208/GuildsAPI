@@ -4,6 +4,8 @@
 namespace rain1208\guildsAPI\guilds;
 
 
+use rain1208\guildsAPI\Main;
+
 class GuildPlayerManager
 {
     private array $players;
@@ -25,5 +27,14 @@ class GuildPlayerManager
         }
 
         return $this->players[$player];
+    }
+
+    public function getAPIGuildPlayer(string $player): ?GuildPlayer
+    {
+        $db = Main::getInstance()->getDatabase();
+        if (in_array($player ,$db->getGuildPlayerDataNameList())) {
+            return $this->getGuildPlayer($player);
+        }
+        return null;
     }
 }
