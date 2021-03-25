@@ -36,12 +36,12 @@ class GuildManager
     {
         $data = Main::getInstance()->getDatabase()->getGuildMember($guildID);
 
-        $admin = $data[GuildPermission::admin] ?: [];
-        $member = $data[GuildPermission::member] ?: [];
+        $admin = $data[GuildPermission::admin];
+        $member = $data[GuildPermission::member];
 
         $members = array_merge($admin, $member);
 
-        $wait = $data[GuildPermission::wait] ?: [];
+        $wait = $data[GuildPermission::wait];
 
         $this->guilds[$guildID] = new Guild(new GuildId($guildID), $name, new GuildLevel($level, $exp), $owner, $members, $wait);
     }
