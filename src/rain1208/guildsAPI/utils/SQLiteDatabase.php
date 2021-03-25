@@ -6,6 +6,7 @@ namespace rain1208\guildsAPI\utils;
 
 use poggit\libasynql\DataConnector;
 use poggit\libasynql\libasynql;
+use rain1208\guildsAPI\guilds\Guild;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use SQLite3;
@@ -30,6 +31,36 @@ class SQLiteDatabase
 
         $file = $plugin->getDataFolder().$plugin->getConfig()->get("database")["sqlite"]["file"];
         $this->syncDB = new SQLite3($file, SQLITE3_OPEN_READONLY);
+    }
+
+    public function createGuildData(Guild $guild)
+    {
+        $this->db->executeInsert(
+            "guildsql.guild.create",
+            [
+                "id" => $guild->getGuildId()->getValue(),
+                "name" => $guild->getName(),
+                "level" => $guild->getGuildLevel()->getLevel(),
+                "exp" => $guild->getGuildLevel()->getExp()
+            ],
+            function () use ($guild) {
+                Main::getInstance()->getLogger()->info($guild->getName()."を作成しました");
+            });
+    }
+
+    public function saveGuildData(Guild $guild)
+    {
+        $this->db->executeChange(
+            "guildsql.guild.save",
+            [
+                "guild_id" => $guild->getGuildId()->getValue(),
+                "level" => $guild->getGuildLevel()->getLevel(),
+                "exp" => $guild->getGuildLevel()->getExp()
+            ],
+            function () use($guild) {
+                Main::getInstance()->getLogger()->info($guild->getName()."を保存しました");
+            }
+        );
     }
 
     public function getAllGuildData(): array
@@ -66,6 +97,19 @@ class SQLiteDatabase
 
         while ($res = $stmt->fetchArray(SQLITE3_ASSOC)) {
             $result[$res["permission"]][] = $res["id"];
+        }
+
+        return $result;
+    }
+
+    public function getGuildPlayerDataNameList(): array
+    {
+        $stmt = $this->syncDB->query("SELECT id FROM players");
+
+        $result = [];
+
+        while ($res = $stmt->fetchArray(SQLITE3_ASSOC)) {
+            $result[] = $res["id"];
         }
 
         return $result;

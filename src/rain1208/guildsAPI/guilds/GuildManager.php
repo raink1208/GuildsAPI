@@ -83,4 +83,11 @@ class GuildManager
     {
         Main::getInstance()->getDatabase()->saveGuildData($guild);
     }
+
+    public function saveAll()
+    {
+        foreach ($this->guilds as $guildId => $guild) {
+            $this->saveGuild($guild);
+        }
+    }
 }
