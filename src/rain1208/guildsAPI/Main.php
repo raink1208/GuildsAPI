@@ -30,11 +30,25 @@ class Main extends PluginBase
         $this->configManager = new ConfigManager();
 
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+
+        $this->registerCommand();
     }
 
     public function onDisable()
     {
 
+    }
+
+    public function registerCommand()
+    {
+        $map = $this->getServer()->getCommandMap();
+        $commands = [
+            "guild" => "rain1208\guildsAPI\commands\GuildCommand"
+        ];
+
+        foreach ($commands as $command => $class) {
+            $map->register("guildsAPI", new $class($command, $this));
+        }
     }
 
     public static function getInstance(): Main
