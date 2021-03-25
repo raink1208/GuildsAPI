@@ -8,6 +8,7 @@ use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use rain1208\guildsAPI\models\GuildLevel;
 use rain1208\guildsAPI\utils\ConfigManager;
+use rain1208\guildsAPI\utils\GuildPermission;
 
 class GuildManager
 {
@@ -33,9 +34,16 @@ class GuildManager
 
     public function loadGuild(int $guildID, string $name, int $level, int $exp, string $owner)
     {
-        $member = Main::getInstance()->getDatabase()->getAllGuildData();
+        $data = Main::getInstance()->getDatabase()->getGuildMember($guildID);
 
-        $this->guilds[$guildID] = new Guild(new GuildId($guildID), $name, new GuildLevel($level, $exp), $owner, $member);
+        $admin = $data[GuildPermission::admin];
+        $member = $data[GuildPermission::member];
+
+        $members = array_merge($admin, $member);
+
+        $wait = $data[GuildPermission::wait];
+
+        $this->guilds[$guildID] = new Guild(new GuildId($guildID), $name, new GuildLevel($level, $exp), $owner, $members, $wait);
     }
 
     public function getGuilds(): array
@@ -63,7 +71,7 @@ class GuildManager
         $config->set("GuildUsedIDLast", $id);
         $config->save();
 
-        $guild = new Guild(new GuildId($id), $name, new GuildLevel(0, 0), $owner, []);
+        $guild = new Guild(new GuildId($id), $name, new GuildLevel(0, 0), $owner);
 
         $this->nameList[$name] = $id;
         $this->guilds[$id] = $guild;

@@ -4,8 +4,6 @@
 namespace rain1208\guildsAPI\guilds;
 
 
-use pocketmine\Player;
-
 class GuildPlayerManager
 {
     private array $players;
@@ -20,12 +18,12 @@ class GuildPlayerManager
         $this->players[$player] = new GuildPlayer($player);
     }
 
-    public function getGuildPlayer(Player $player)
+    public function getGuildPlayer(string $player): GuildPlayer
     {
-        if (!in_array($player->getName(), $this->players)) {
-            $this->loadPlayer($player->getName());
+        if (!in_array($player, $this->players)) {
+            $this->loadPlayer($player);
         }
 
-        return $this->players[$player->getName()];
+        return $this->players[$player];
     }
 }

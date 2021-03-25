@@ -4,8 +4,10 @@
 namespace rain1208\guildsAPI\guilds;
 
 
+use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use rain1208\guildsAPI\models\GuildLevel;
+use rain1208\guildsAPI\utils\GuildPermission;
 
 class Guild
 {
@@ -17,14 +19,17 @@ class Guild
     private string $owner;
     private array $members;
 
+    private array $wait;
+
     /**
      * @param GuildId $guildId
      * @param string $name
      * @param GuildLevel $guildLevel
      * @param string $owner
      * @param string[] $member
+     * @param array $wait
      */
-    public function __construct(GuildId $guildId, string $name, GuildLevel $guildLevel, string $owner, array $member)
+    public function __construct(GuildId $guildId, string $name, GuildLevel $guildLevel, string $owner, array $member = [], array $wait = [])
     {
         $this->name = $name;
 
@@ -33,6 +38,7 @@ class Guild
 
         $this->owner = $owner;
         $this->members = $member;
+        $this->wait = $wait;
     }
 
     public function getName(): string
@@ -50,6 +56,53 @@ class Guild
         return $this->guildLevel;
     }
 
+    public function join(GuildPlayer $player)
+    {
+        $this->wait[] = $player->getName();
+
+        $player->setGuildId($this->guildId->getValue());
+        $player->setPermission(GuildPermission::wait);
+
+        Main::getInstance()->getDatabase()->savePlayerData($player);
+    }
+
+    public function accept(string $player)
+    {
+        $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player);
+
+        $guildPlayer->setPermission(GuildPermission::member);
+        Main::getInstance()->getDatabase()->savePlayerData($guildPlayer);
+
+        $this->broadcastMessage($player."がギルドに参加しました");
+    }
+
+    public function leave(GuildPlayer $player)
+    {
+        if (in_array($player->getName(), $this->wait)) {
+            $index = array_search($player->getName(), $this->wait);
+            array_splice($this->wait ,$index);
+        }
+
+        if (in_array($player->getName(), $this->members)) {
+            $index = array_search($player->getName(), $this->members);
+            array_splice($this->members ,$index);
+        }
+
+        $player->setGuildId(GuildId::NO_GUILD);
+        $player->setPermission(GuildPermission::NO_DATA);
+
+        Main::getInstance()->getDatabase()->savePlayerData($player);
+    }
+
+    public function getAllGuildMember(): array
+    {
+        $result[] = $this->owner;
+
+        $result += $this->members;
+
+        return $result;
+    }
+
     public function addExp(int $exp)
     {
         $hasExp = $this->guildLevel->getExp();
@@ -64,6 +117,15 @@ class Guild
     public function getNeedExp(int $level): int
     {
         return 50000*sqrt($level);
+    }
+
+    public function broadcastMessage(string $message)
+    {
+        $manager = Main::getInstance()->getGuildPlayerManager();
+
+        foreach ($this->members as $member) {
+            $manager->getGuildPlayer($member)->sendMessage($message);
+        }
     }
 
     public function toArray(): array
