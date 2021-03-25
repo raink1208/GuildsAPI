@@ -96,7 +96,11 @@ class Guild
 
     public function getAllGuildMember(): array
     {
-        return Main::getInstance()->getDatabase()->getGuildMember($this->guildId);
+        $result[] = $this->owner;
+
+        $result += $this->members;
+
+        return $result;
     }
 
     public function addExp(int $exp)
@@ -113,6 +117,15 @@ class Guild
     public function getNeedExp(int $level): int
     {
         return 50000*sqrt($level);
+    }
+
+    public function broadcastMessage(string $message)
+    {
+        $manager = Main::getInstance()->getGuildPlayerManager();
+
+        foreach ($this->members as $member) {
+            $manager->getGuildPlayer($member)->sendMessage($message);
+        }
     }
 
     public function toArray(): array
