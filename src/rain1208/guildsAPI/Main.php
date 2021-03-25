@@ -24,6 +24,9 @@ class Main extends PluginBase
     {
         self::$instance = $this;
 
+        $this->saveDefaultConfig();
+        $this->reloadConfig();
+
         $this->database = new SQLiteDatabase($this);
         $this->guildManager = new GuildManager();
         $this->guildPlayerManager = new GuildPlayerManager();
