@@ -23,7 +23,7 @@ abstract class AbstractMenuForm extends MenuForm
 
     abstract public function submit(Player $player, int $select): void;
 
-    public function close(Player $player)
+    public function close(Player $player): void
     {
     }
 }
