@@ -48,9 +48,19 @@ class GuildPlayer
         return $this->guildId;
     }
 
+    public function setGuildId(int $id)
+    {
+        $this->guildId = new GuildId($id);
+    }
+
     public function getPermission(): int
     {
         return $this->permission;
+    }
+
+    public function setPermission(int $id)
+    {
+        $this->permission = $id;
     }
 
     public function sendMessage(string $message)
@@ -70,5 +80,14 @@ class GuildPlayer
             $player->setDisplayName("[".$guildName."§r]" . $player->getName());
             $player->setNameTag("[".$guildName."§r]" . $player->getName());
         }
+    }
+
+    public function toArray(): array
+    {
+        return [
+            "name" => $this->name,
+            "guild_id" => $this->guildId,
+            "permission" => $this->permission
+        ];
     }
 }

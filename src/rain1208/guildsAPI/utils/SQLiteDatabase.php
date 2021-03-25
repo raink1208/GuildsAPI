@@ -10,6 +10,7 @@ use rain1208\guildsAPI\guilds\GuildPlayer;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use SQLite3;
+use SQLite3Stmt;
 
 class SQLiteDatabase
 {
@@ -40,7 +41,7 @@ class SQLiteDatabase
         $stmt->bindValue(":level", $guild->getGuildLevel()->getLevel());
         $stmt->bindValue(":exp", $guild->getGuildLevel()->getExp());
 
-        $stmt->execute();
+        $this->asyncExecute($stmt);
     }
 
     public function saveGuildData(Guild $guild)
@@ -51,7 +52,7 @@ class SQLiteDatabase
         $stmt->bindValue(":level", $guild->getGuildLevel()->getLevel());
         $stmt->bindValue(":exp", $guild->getGuildLevel()->getExp());
 
-        $stmt->execute();
+        $this->asyncExecute($stmt);
     }
 
     public function getAllGuildData(): array
@@ -69,7 +70,7 @@ class SQLiteDatabase
 
     /**
      * @param int|GuildId $id
-     * @return string[]
+     * @return array
      */
     public function getGuildMember($id): array
     {
@@ -77,9 +78,36 @@ class SQLiteDatabase
             $id = $id->getValue();
         }
 
-        $stmt = $this->db->prepare("SELECT id FROM players WHERE guild_id=:guild_id");
+        $stmt = $this->db->prepare("SELECT id, permission FROM players WHERE guild_id=:guild_id");
 
         $stmt->bindValue(":guild_id", $id);
+
+        $stmt = $stmt->execute();
+
+        $result = [[],[],[],[]];
+
+        while ($res = $stmt->fetchArray(SQLITE3_ASSOC)) {
+            $result[$res["permission"]][] = $res["id"];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param int|GuildId $id
+     * @param int $permission
+     * @return array
+     */
+    public function getGuildMemberByPermission($id, int $permission): array
+    {
+        if ($id instanceof GuildId) {
+            $id = $id->getValue();
+        }
+
+        $stmt = $this->db->prepare("SELECT id FROM players WHERE guild_id=:guild_id AND permission=:permission");
+
+        $stmt->bindValue(":guild_id", $id);
+        $stmt->bindValue(":permission", $permission);
 
         $stmt = $stmt->execute();
 
@@ -100,7 +128,18 @@ class SQLiteDatabase
         $stmt->bindValue(":guild_id", $player->getGuildId()->getValue());
         $stmt->bindValue(":permission", $player->getPermission());
 
-        $stmt->execute();
+        $this->asyncExecute($stmt);
+    }
+
+    public function savePlayerData(GuildPlayer $player)
+    {
+        $stmt = $this->db->prepare("UPDATE players SET guild_id=:guild_id, permission=:permission WHERE id=:name");
+
+        $stmt->bindValue(":name", $player->getName());
+        $stmt->bindValue(":guild_id", $player->getGuildId()->getValue());
+        $stmt->bindValue(":permission", $player->getPermission());
+
+        $this->asyncExecute($stmt);
     }
 
     public function getGuildPlayerData(string $name): ?array
@@ -112,5 +151,10 @@ class SQLiteDatabase
         $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
 
         return $result !== false ? $result : null;
+    }
+
+    public function asyncExecute(SQLite3Stmt $stmt)
+    {
+        Main::getInstance()->getServer()->getAsyncPool()->submitTask(new SQLExecutionTask($stmt));
     }
 }
