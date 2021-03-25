@@ -24,6 +24,9 @@ class Main extends PluginBase
     {
         self::$instance = $this;
 
+        $this->saveDefaultConfig();
+        $this->reloadConfig();
+
         $this->database = new SQLiteDatabase($this);
         $this->guildManager = new GuildManager();
         $this->guildPlayerManager = new GuildPlayerManager();
@@ -36,7 +39,7 @@ class Main extends PluginBase
 
     public function onDisable()
     {
-
+        $this->database->close();
     }
 
     public function registerCommand()
