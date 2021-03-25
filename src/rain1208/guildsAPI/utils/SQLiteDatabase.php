@@ -153,7 +153,20 @@ class SQLiteDatabase
         return $result !== false ? $result : null;
     }
 
-    public function asyncExecute(SQLite3Stmt $stmt)
+    public function getGuildPlayerDataNameList(): array
+    {
+        $stmt = $this->db->query("SELECT id FROM players");
+
+        $result = [];
+
+        while ($res = $stmt->fetchArray(SQLITE3_ASSOC)) {
+            $result[] = $res["id"];
+        }
+
+        return $result;
+    }
+
+    private function asyncExecute(SQLite3Stmt $stmt)
     {
         Main::getInstance()->getServer()->getAsyncPool()->submitTask(new SQLExecutionTask($stmt));
     }
