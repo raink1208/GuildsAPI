@@ -1,0 +1,5 @@
+database:
+  type: sqlite
+  sqlite:
+    file: guilds.db
+  worker-limit: 1
