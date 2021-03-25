@@ -40,6 +40,7 @@ class GuildPlayerManager
 
     public function savePlayer(GuildPlayer $player)
     {
+        Main::getInstance()->getDatabase()->savePlayerData($player);
     }
 
     public function saveAll()
