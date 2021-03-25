@@ -39,6 +39,8 @@ class Main extends PluginBase
 
     public function onDisable()
     {
+        $this->guildPlayerManager->saveAll();
+        $this->guildManager->saveAll();
         $this->database->close();
     }
 
