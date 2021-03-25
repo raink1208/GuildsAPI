@@ -35,4 +35,26 @@ UPDATE guilds SET level=:level, exp=:exp WHERE id=:guild_id;
 
     -- #}
 
+    -- #{ player
+
+        -- #{ create
+        -- #:id string
+        -- #:guild_id int
+        -- #:permission int
+
+INSERT INTO players (id, guild_id, permission) VALUES (:id, :guild_id, :permission);
+
+        -- #}
+
+        -- #{ save
+        -- #:name string
+        -- #:guild_id int
+        -- #:permission int
+
+UPDATE players SET guild_id=:guild_id, permission=:permission WHERE id=:name;
+
+        -- #}
+
+    -- #}
+
 -- #}

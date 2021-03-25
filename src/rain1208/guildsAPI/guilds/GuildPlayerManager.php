@@ -37,4 +37,15 @@ class GuildPlayerManager
         }
         return null;
     }
+
+    public function savePlayer(GuildPlayer $player)
+    {
+    }
+
+    public function saveAll()
+    {
+        foreach ($this->players as $name => $player) {
+            $this->savePlayer($player);
+        }
+    }
 }

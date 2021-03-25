@@ -7,6 +7,7 @@ namespace rain1208\guildsAPI\utils;
 use poggit\libasynql\DataConnector;
 use poggit\libasynql\libasynql;
 use rain1208\guildsAPI\guilds\Guild;
+use rain1208\guildsAPI\guilds\GuildPlayer;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use SQLite3;
@@ -45,7 +46,8 @@ class SQLiteDatabase
             ],
             function () use ($guild) {
                 Main::getInstance()->getLogger()->info($guild->getName()."を作成しました");
-            });
+            }
+        );
     }
 
     public function saveGuildData(Guild $guild)
@@ -100,6 +102,47 @@ class SQLiteDatabase
         }
 
         return $result;
+    }
+
+    public function createGuildPlayerData(GuildPlayer $player)
+    {
+        $this->db->executeInsert(
+            "guildsql.player.create",
+            [
+                "id" => $player->getName(),
+                "guild_id" => $player->getGuildId()->getValue(),
+                "permission" => $player->getPermission()
+            ],
+            function () use ($player) {
+
+            }
+        );
+    }
+
+    public function savePlayerData(GuildPlayer $player)
+    {
+        $this->db->executeChange(
+            "guildsql.player.save",
+            [
+                "name" => $player->getName(),
+                "guild_id" => $player->getGuildId()->getValue(),
+                "permission" => $player->getPermission()
+            ],
+            function () use ($player) {
+
+            }
+        );
+    }
+
+    public function getGuildPlayerData(string $name): ?array
+    {
+        $stmt = $this->syncDB->prepare("SELECT players.id, guild_id, permission, g.name FROM players left outer join guilds g on players.guild_id = g.id WHERE players.id=:name");
+
+        $stmt->bindValue(":name", $name);
+
+        $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+
+        return $result !== false ? $result : null;
     }
 
     public function getGuildPlayerDataNameList(): array
