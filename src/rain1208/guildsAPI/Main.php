@@ -39,7 +39,7 @@ class Main extends PluginBase
 
     public function onDisable()
     {
-
+        $this->database->close();
     }
 
     public function registerCommand()

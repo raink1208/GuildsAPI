@@ -25,4 +25,13 @@ class SQLiteDatabase
         $this->db->executeGeneric("guildsql.init.guilds");
         $this->db->executeGeneric("guildsql.init.players");
     }
+
+    public function close()
+    {
+        $this->db->waitAll();
+
+        if (isset($this->db)) {
+            $this->db->close();
+        }
+    }
 }
