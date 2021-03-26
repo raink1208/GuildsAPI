@@ -4,11 +4,11 @@
 namespace rain1208\guildsAPI\guilds;
 
 
-use onebone\economyapi\EconomyAPI;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use rain1208\guildsAPI\models\GuildLevel;
 use rain1208\guildsAPI\utils\GuildPermission;
+use rain1208\guildsAPI\wrapper\EconomyPlugin;
 
 class Guild
 {
@@ -134,7 +134,7 @@ class Guild
         $amount = 0;
 
         foreach ($this->getAllGuildMember() as $member) {
-            $amount += EconomyAPI::getInstance()->myMoney($member);
+            $amount += EconomyPlugin::myMoney($member);
         }
 
         return $amount;
