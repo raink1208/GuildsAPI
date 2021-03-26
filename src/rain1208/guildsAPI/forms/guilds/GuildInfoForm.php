@@ -6,16 +6,20 @@ namespace rain1208\guildsAPI\forms\guilds;
 
 use dktapps\pmforms\CustomFormResponse;
 use dktapps\pmforms\element\Label;
+use pocketmine\form\Form;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractCustomForm;
 use rain1208\guildsAPI\guilds\Guild;
-use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\utils\GuildPermission;
 
 class GuildInfoForm extends AbstractCustomForm
 {
-    public function __construct(Guild $guild)
+    private Form $back;
+
+    public function __construct(Guild $guild, Form $back)
     {
+        $this->back = $back;
+
         $title = $guild->getName()."の情報";
         $elements = [
             new Label("guildInfo", $this->getInfo($guild))
@@ -41,7 +45,6 @@ class GuildInfoForm extends AbstractCustomForm
 
     public function submit(Player $player, CustomFormResponse $response): void
     {
-        $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player->getName());
-        $player->sendForm(new GuildMenuForm($guildPlayer));
+        $player->sendForm($this->back);
     }
 }
