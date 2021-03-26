@@ -7,6 +7,7 @@ namespace rain1208\guildsAPI\guilds;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use rain1208\guildsAPI\utils\GuildPermission;
+use rain1208\guildsAPI\wrapper\EconomyPlugin;
 
 class GuildPlayer
 {
@@ -80,6 +81,33 @@ class GuildPlayer
             $player->setDisplayName("[".$guildName."§r]" . $player->getName());
             $player->setNameTag("[".$guildName."§r]" . $player->getName());
         }
+    }
+
+    public function getMoney(): int
+    {
+        return EconomyPlugin::myMoney($this->name);
+    }
+
+    public function getInfo(): array
+    {
+        $data = [
+            "name" => $this->getName(),
+            "money" => $this->getMoney(),
+            "guild" => "未参加",
+            "guildId" => "未参加",
+            "permission" => "未参加"
+        ];
+
+        $guild = Main::getInstance()->getGuildManager()->getGuild($this->getGuildId());
+
+        if ($guild !== null) {
+            $permissions = ["オーナー", "管理者", "メンバー", "認証待ち"];
+            $data["guild"] = $guild->getName();
+            $data["guildId"] = $guild->getGuildId()->getValue();
+            $data["permission"] = $permissions[$this->getPermission()];
+        }
+
+        return $data;
     }
 
     public function toArray(): array

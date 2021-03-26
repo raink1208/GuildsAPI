@@ -7,6 +7,8 @@ namespace rain1208\guildsAPI\forms;
 use dktapps\pmforms\MenuOption;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractMenuForm;
+use rain1208\guildsAPI\forms\guilds\GuildMenuForm;
+use rain1208\guildsAPI\Main;
 
 class MainForm extends AbstractMenuForm
 {
@@ -26,5 +28,10 @@ class MainForm extends AbstractMenuForm
 
     public function submit(Player $player, int $select): void
     {
+        $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player->getName());
+        switch ($select) {
+            case 0:
+                $player->sendForm(new GuildMenuForm($guildPlayer));
+        }
     }
 }
