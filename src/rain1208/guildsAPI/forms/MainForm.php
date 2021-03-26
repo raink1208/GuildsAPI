@@ -8,6 +8,7 @@ use dktapps\pmforms\MenuOption;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractMenuForm;
 use rain1208\guildsAPI\forms\guilds\GuildMenuForm;
+use rain1208\guildsAPI\forms\lists\MoneySortedList;
 use rain1208\guildsAPI\Main;
 
 class MainForm extends AbstractMenuForm
@@ -32,6 +33,19 @@ class MainForm extends AbstractMenuForm
         switch ($select) {
             case 0:
                 $player->sendForm(new GuildMenuForm($guildPlayer));
+                break;
+            case 1:
+                $player->sendForm(); //ギルドへの参加
+                break;
+            case 2:
+                $player->sendForm(); //ギルドのリスト
+                break;
+            case 3:
+                $player->sendForm(new MoneySortedList());
+                break;
+            case 4:
+                $player->sendForm();//ギルドの作成
+                break;
         }
     }
 }
