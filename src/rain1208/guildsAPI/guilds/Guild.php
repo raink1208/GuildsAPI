@@ -4,6 +4,7 @@
 namespace rain1208\guildsAPI\guilds;
 
 
+use onebone\economyapi\EconomyAPI;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use rain1208\guildsAPI\models\GuildLevel;
@@ -126,6 +127,38 @@ class Guild
         foreach ($this->members as $member) {
             $manager->getGuildPlayer($member)->sendMessage($message);
         }
+    }
+
+    public function totalMemberMoney(): int
+    {
+        $amount = 0;
+
+        foreach ($this->getAllGuildMember() as $member) {
+            $amount += EconomyAPI::getInstance()->myMoney($member);
+        }
+
+        return $amount;
+    }
+
+    public function getGuildInfo(): array
+    {
+        $owner = $this->owner;
+        $money = $this->totalMemberMoney();
+        $memberCount = [];
+
+        $data = Main::getInstance()->getDatabase()->getGuildMember($this->guildId);
+        for ($i = 0; $i <= 3; $i++) {
+            $memberCount[$i] = count($data[$i]);
+        }
+
+        return [
+            "name" => $this->getName(),
+            "level" => $this->guildLevel->getLevel(),
+            "exp" => $this->guildLevel->getExp(),
+            "owner" => $owner,
+            "totalMoney" => $money,
+            "memberCount" => $memberCount
+        ];
     }
 
     public function toArray(): array
