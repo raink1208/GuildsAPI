@@ -51,6 +51,6 @@ class MemberListForm extends AbstractMenuForm
 
         if ($guildPlayer === null) return;
 
-        $player->sendForm(new PlayerInfoForm($guildPlayer));
+        $player->sendForm(new PlayerInfoForm($guildPlayer, $this));
     }
 }

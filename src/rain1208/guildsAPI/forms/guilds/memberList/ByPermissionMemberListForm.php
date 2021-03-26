@@ -35,7 +35,7 @@ class ByPermissionMemberListForm extends AbstractMenuForm
     public function submit(Player $player, int $select): void
     {
         if ($select === 4) {
-            $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player);
+            $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player->getName());
             $player->sendForm(new GuildMenuForm($guildPlayer));
             return;
         }
