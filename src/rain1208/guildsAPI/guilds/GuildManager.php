@@ -46,9 +46,34 @@ class GuildManager
         $this->guilds[$guildID] = new Guild(new GuildId($guildID), $name, new GuildLevel($level, $exp), $owner, $members, $wait);
     }
 
+    /** @return Guild[] */
     public function getGuilds(): array
     {
         return array_values($this->guilds);
+    }
+
+    public function getGuildsArray(): array
+    {
+        return $this->guilds;
+    }
+
+    public function getMoneySortGuilds(): array
+    {
+        $data = [];
+
+        foreach ($this->getGuilds() as $guild) {
+            $data[$guild->getGuildId()->getValue()] = $guild->totalMemberMoney();
+        }
+
+        natsort($data);
+
+        $guilds = [];
+
+        foreach (array_keys($data) as $guildId) {
+            $guilds[] = $this->getGuild($guildId);
+        }
+
+        return array_reverse($guilds);
     }
 
     /**
