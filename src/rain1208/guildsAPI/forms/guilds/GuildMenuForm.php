@@ -8,12 +8,15 @@ use dktapps\pmforms\MenuOption;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractMenuForm;
 use rain1208\guildsAPI\forms\guilds\memberList\ByPermissionMemberListForm;
+use rain1208\guildsAPI\forms\MainForm;
 use rain1208\guildsAPI\guilds\GuildPlayer;
 use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\utils\GuildPermission;
 
 class GuildMenuForm extends AbstractMenuForm
 {
+    private int $backButtonPos;
+
     public function __construct(GuildPlayer $player)
     {
         $title = "参加するギルドの情報";
@@ -35,6 +38,10 @@ class GuildMenuForm extends AbstractMenuForm
             $options[] = new MenuOption("ギルドの削除");
         }
 
+        $this->backButtonPos = count($options);
+
+        $options[] = new MenuOption("戻る");
+
         parent::__construct($title, $text, $options);
     }
 
@@ -47,10 +54,13 @@ class GuildMenuForm extends AbstractMenuForm
 
         switch ($select) {
             case 0:
-                $player->sendForm(new GuildInfoForm($guild));
+                $player->sendForm(new GuildInfoForm($guild, $this));
                 break;
             case 1:
                 $player->sendForm(new ByPermissionMemberListForm($guild));
+                break;
+            case $this->backButtonPos:
+                $player->sendForm(new MainForm());
                 break;
         }
     }
