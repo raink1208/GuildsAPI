@@ -31,20 +31,20 @@ class MainForm extends AbstractMenuForm
     public function submit(Player $player, int $select): void
     {
         $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player->getName());
-        switch ($select) {
-            case 0:
+        switch ($this->getOption($select)->getText()) {
+            case "参加しているギルドの確認":
                 $player->sendForm(new GuildMenuForm($guildPlayer));
                 break;
-            case 1:
+            case "ギルドに参加":
                 $player->sendForm(new JoinMenuForm()); //ギルドへの参加
                 break;
-            case 2:
+            case "ギルドの一覧":
                 $player->sendForm(); //ギルドのリスト
                 break;
-            case 3:
+            case "所持金ランキング":
                 $player->sendForm(new MoneySortedList());
                 break;
-            case 4:
+            case "ギルドの作成":
                 $player->sendForm();//ギルドの作成
                 break;
         }
