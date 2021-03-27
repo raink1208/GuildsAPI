@@ -48,6 +48,7 @@ class GuildListForm extends AbstractMenuForm
         if ($this->getOption($select)->getText() === "戻る") {
             if ($this->back === null) return;
             $player->sendForm($this->back);
+            return;
         }
 
         if ($this->join) {
