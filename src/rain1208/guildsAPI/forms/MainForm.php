@@ -23,7 +23,6 @@ class MainForm extends AbstractMenuForm
         $options = [
             new MenuOption("参加しているギルドの確認"),
             new MenuOption("ギルドに参加"),
-            new MenuOption("ギルドの一覧"),
             new MenuOption("所持金ランキング"),
             new MenuOption("ギルドの作成")
         ];
@@ -43,9 +42,6 @@ class MainForm extends AbstractMenuForm
                 break;
             case "ギルドに参加":
                 $player->sendForm(new JoinMenuForm()); //ギルドへの参加
-                break;
-            case "ギルドの一覧":
-                $player->sendForm(); //ギルドのリスト
                 break;
             case "所持金ランキング":
                 $player->sendForm(new MoneySortedList());
