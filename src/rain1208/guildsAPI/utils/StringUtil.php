@@ -29,6 +29,6 @@ class StringUtil
             return false;
         }
 
-        return (substr($string,0,$pLen) === $prefix);
+        return (strtolower(substr($string,0,$pLen)) === strtolower($prefix));
     }
 }
