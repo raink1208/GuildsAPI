@@ -7,6 +7,8 @@ namespace rain1208\guildsAPI\forms\guilds;
 use dktapps\pmforms\MenuOption;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractMenuForm;
+use rain1208\guildsAPI\forms\ErrorForm;
+use rain1208\guildsAPI\forms\guilds\delete\GuildDeleteForm;
 use rain1208\guildsAPI\forms\guilds\leave\LeaveForm;
 use rain1208\guildsAPI\forms\guilds\memberList\ByPermissionMemberListForm;
 use rain1208\guildsAPI\forms\MainForm;
@@ -71,7 +73,11 @@ class GuildMenuForm extends AbstractMenuForm
                 $player->sendForm();
                 break;
             case "ギルドの削除":
-                $player->sendForm();
+                if ($guildPlayer->getPermission() !== GuildPermission::OWNER) {
+                    $player->sendForm(new ErrorForm("あなたはオーナーではないためこの機能は使えません"));
+                    return;
+                }
+                $player->sendForm(new GuildDeleteForm($guild));
                 break;
         }
     }
