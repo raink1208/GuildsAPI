@@ -13,9 +13,12 @@ use rain1208\guildsAPI\Main;
 class MoneySortedList extends AbstractMenuForm
 {
     private array $guilds;
+    private bool $join;
 
-    public function __construct()
+    public function __construct(bool $join = false)
     {
+        $this->join = $join;
+
         $title = "";
         $text = "";
         $options = [];
@@ -45,6 +48,6 @@ class MoneySortedList extends AbstractMenuForm
             return;
         }
 
-        $player->sendForm(new GuildListForm($this->guilds[$select]));
+        $player->sendForm(new GuildListForm($this->guilds[$select], $this, $this->join));
     }
 }
