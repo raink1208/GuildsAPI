@@ -40,7 +40,7 @@ class MoneySortedList extends AbstractMenuForm
 
     public function submit(Player $player, int $select): void
     {
-        if (count($this->guilds) === $select) {
+        if ($this->getOption($select)->getText() === "戻る") {
             $player->sendForm(new MainForm());
             return;
         }

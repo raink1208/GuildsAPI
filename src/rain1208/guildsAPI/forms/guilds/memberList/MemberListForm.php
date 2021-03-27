@@ -41,7 +41,7 @@ class MemberListForm extends AbstractMenuForm
 
     public function submit(Player $player, int $select): void
     {
-        if (count($this->players) === $select) {
+        if ($this->getOption($select)->getText() === "戻る") {
             if ($this->back === null) return;
             $player->sendForm($this->back);
             return;
