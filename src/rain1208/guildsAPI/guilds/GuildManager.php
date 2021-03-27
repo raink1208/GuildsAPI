@@ -52,11 +52,6 @@ class GuildManager
         return array_values($this->guilds);
     }
 
-    public function getGuildsArray(): array
-    {
-        return $this->guilds;
-    }
-
     public function getMoneySortGuilds(): array
     {
         $data = [];

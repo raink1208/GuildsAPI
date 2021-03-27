@@ -19,6 +19,6 @@ class EventListener implements Listener
     {
         $player = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($event->getPlayer()->getName());
 
-        Main::getInstance()->getDatabase()->savePlayerData($player);
+        Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
     }
 }
