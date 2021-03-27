@@ -15,8 +15,12 @@ use rain1208\guildsAPI\utils\StringUtil;
 
 class GuildSearchForm extends AbstractCustomForm
 {
-    public function __construct()
+    private bool $join;
+
+    public function __construct(bool $join = false)
     {
+        $this->join = $join;
+
         $title = "Guildの検索";
         $elements = [
             new Label("label1","各項目でマッチしたものを抽出します(OR検索)"),
@@ -51,6 +55,6 @@ class GuildSearchForm extends AbstractCustomForm
             }
         }
 
-        $player->sendForm(new GuildListForm($result,$this));
+        $player->sendForm(new GuildListForm($result, $this, $this->join));
     }
 }

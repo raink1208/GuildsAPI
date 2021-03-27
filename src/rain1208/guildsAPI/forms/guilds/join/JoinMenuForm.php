@@ -35,7 +35,7 @@ class JoinMenuForm extends AbstractMenuForm
 
         switch ($select) {
             case 0:
-                $player->sendForm(new GuildSearchForm());
+                $player->sendForm(new GuildSearchForm(true));
                 break;
             case 1:
                 $player->sendForm(new MoneySortedList(true));
