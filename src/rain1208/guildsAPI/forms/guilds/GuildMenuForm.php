@@ -7,6 +7,7 @@ namespace rain1208\guildsAPI\forms\guilds;
 use dktapps\pmforms\MenuOption;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractMenuForm;
+use rain1208\guildsAPI\forms\guilds\leave\LeaveForm;
 use rain1208\guildsAPI\forms\guilds\memberList\ByPermissionMemberListForm;
 use rain1208\guildsAPI\forms\MainForm;
 use rain1208\guildsAPI\guilds\GuildPlayer;
@@ -53,12 +54,24 @@ class GuildMenuForm extends AbstractMenuForm
 
         if ($guild === null) return;
 
-        switch ($select) {
-            case 0:
+        switch ($this->getOption($select)->getText()) {
+            case "情報":
                 $player->sendForm(new GuildInfoForm($guild, $this));
                 break;
-            case 1:
+            case "メンバー":
                 $player->sendForm(new ByPermissionMemberListForm($guild));
+                break;
+            case "ギルドから退出":
+                $player->sendForm(new LeaveForm($guild));
+                break;
+            case "プレイヤーの認証":
+                $player->sendForm();//
+                break;
+            case "プレイヤーの設定":
+                $player->sendForm();
+                break;
+            case "ギルドの削除":
+                $player->sendForm();
                 break;
         }
     }
