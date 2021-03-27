@@ -33,6 +33,10 @@ class MainForm extends AbstractMenuForm
         $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player->getName());
         switch ($this->getOption($select)->getText()) {
             case "参加しているギルドの確認":
+                if ($guildPlayer->getGuildId() === GuildId::NO_GUILD) {
+                    $player->sendForm(new ErrorForm("ギルドに参加していません", $this));
+                    return;
+                }
                 $player->sendForm(new GuildMenuForm($guildPlayer));
                 break;
             case "ギルドに参加":
