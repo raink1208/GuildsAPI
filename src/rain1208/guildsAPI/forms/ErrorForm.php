@@ -10,9 +10,9 @@ use rain1208\guildsAPI\forms\addons\AbstractModalForm;
 
 class ErrorForm extends AbstractModalForm
 {
-    private Form $back;
+    private ?Form $back;
 
-    public function __construct(string $text,Form $back)
+    public function __construct(string $text,?Form $back = null)
     {
         $this->back = $back;
 
@@ -25,6 +25,8 @@ class ErrorForm extends AbstractModalForm
     public function submit(Player $player, bool $bool): void
     {
         if ($bool) {
+            if ($this->back === null) return;
+
             $player->sendForm($this->back);
         }
     }
