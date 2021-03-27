@@ -101,6 +101,11 @@ class GuildManager
         return $guild;
     }
 
+    public function deleteGuild(Guild $guild)
+    {
+        //TODO("")
+    }
+
     public function getGuildCreateNeedMoney(): int
     {
         $needMoney = Main::getInstance()->getConfigManager()->get(ConfigManager::SETTING)->get("GuildCreateNeedMoney");
