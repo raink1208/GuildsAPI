@@ -64,15 +64,35 @@ class Guild
         $player->setGuildId($this->guildId->getValue());
         $player->setPermission(GuildPermission::wait);
 
-        Main::getInstance()->getDatabase()->savePlayerData($player);
+        Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
+        Main::getInstance()->getGuildManager()->saveGuild($this);
+
+        $player->sendMessage($this->getName()."への参加申請を受け取りました");
+
+        $owner = $this->getMemberHasPermission(GuildPermission::OWNER);
+        $admin = $this->getMemberHasPermission(GuildPermission::admin);
+
+        /** @var GuildPlayer $player */
+        foreach (array_merge($owner, $admin) as $player) {
+            $player->sendMessage($player->getName()."がギルドに参加申請をしています");
+        }
     }
 
     public function accept(string $player)
     {
+        if (in_array($player, $this->wait)) {
+            $index = array_search($player, $this->wait);
+            array_splice($this->wait ,$index);
+        }
+
         $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player);
 
         $guildPlayer->setPermission(GuildPermission::member);
-        Main::getInstance()->getDatabase()->savePlayerData($guildPlayer);
+
+        $this->members[] = $player;
+
+        Main::getInstance()->getGuildPlayerManager()->savePlayer($guildPlayer);
+        Main::getInstance()->getGuildManager()->saveGuild($this);
 
         $this->broadcastMessage($player."がギルドに参加しました");
     }
@@ -92,7 +112,8 @@ class Guild
         $player->setGuildId(GuildId::NO_GUILD);
         $player->setPermission(GuildPermission::NO_DATA);
 
-        Main::getInstance()->getDatabase()->savePlayerData($player);
+        Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
+        Main::getInstance()->getGuildManager()->saveGuild($this);
     }
 
     public function getAllGuildMember(): array
@@ -100,6 +121,26 @@ class Guild
         $result[] = $this->owner;
 
         $result += $this->members;
+
+        return $result;
+    }
+
+    /**
+     * @param int $permission
+     * @return GuildPlayer[]
+     */
+    public function getMemberHasPermission(int $permission): array
+    {
+        $result = [];
+        if ($permission === GuildPermission::OWNER) {
+            $result[] = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($this->owner);
+            return $result;
+        }
+
+        $data = Main::getInstance()->getDatabase()->getGuildMember($this->guildId)[$permission];
+        foreach ($data as $player) {
+            $result[] = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player);
+        }
 
         return $result;
     }
@@ -138,6 +179,22 @@ class Guild
         }
 
         return $amount;
+    }
+
+    public function getGuildInfoString(): string
+    {
+        $info = $this->getGuildInfo();
+
+        $msg = "ギルド名: " . $info["name"] . "\n";
+        $msg .= "ギルドのオーナー: " . $info["owner"] . "\n";
+        $msg .= "所持金合計: " . $info["totalMoney"] . "\n";
+        $msg .= "ギルドのレベル(exp): " . $info["level"] . "(" . $info["exp"] . ")\n\n";
+        $msg .= "ギルドメンバー情報" . "\n";
+        $msg .= "管理者数: " . $info["memberCount"][GuildPermission::admin] . "\n";
+        $msg .= "メンバー数: " . $info["memberCount"][GuildPermission::member] . "\n";
+        $msg .= "認証待ち数: " . $info["memberCount"][GuildPermission::wait];
+
+        return $msg;
     }
 
     public function getGuildInfo(): array

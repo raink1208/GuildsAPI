@@ -15,8 +15,6 @@ use rain1208\guildsAPI\utils\GuildPermission;
 
 class GuildMenuForm extends AbstractMenuForm
 {
-    private int $backButtonPos;
-
     public function __construct(GuildPlayer $player)
     {
         $title = "参加するギルドの情報";
@@ -38,8 +36,6 @@ class GuildMenuForm extends AbstractMenuForm
             $options[] = new MenuOption("ギルドの削除");
         }
 
-        $this->backButtonPos = count($options);
-
         $options[] = new MenuOption("戻る");
 
         parent::__construct($title, $text, $options);
@@ -47,6 +43,11 @@ class GuildMenuForm extends AbstractMenuForm
 
     public function submit(Player $player, int $select): void
     {
+        if ($this->getOption($select)->getText() === "戻る") {
+            $player->sendForm(new MainForm());
+            return;
+        }
+
         $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player->getName());
         $guild = Main::getInstance()->getGuildManager()->getGuild($guildPlayer->getGuildId());
 
@@ -58,9 +59,6 @@ class GuildMenuForm extends AbstractMenuForm
                 break;
             case 1:
                 $player->sendForm(new ByPermissionMemberListForm($guild));
-                break;
-            case $this->backButtonPos:
-                $player->sendForm(new MainForm());
                 break;
         }
     }
