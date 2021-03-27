@@ -7,10 +7,12 @@ namespace rain1208\guildsAPI\forms;
 use dktapps\pmforms\MenuOption;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractMenuForm;
+use rain1208\guildsAPI\forms\guilds\create\GuildCreateForm;
 use rain1208\guildsAPI\forms\guilds\GuildMenuForm;
 use rain1208\guildsAPI\forms\guilds\join\JoinMenuForm;
 use rain1208\guildsAPI\forms\lists\MoneySortedList;
 use rain1208\guildsAPI\Main;
+use rain1208\guildsAPI\models\GuildId;
 
 class MainForm extends AbstractMenuForm
 {
@@ -49,7 +51,11 @@ class MainForm extends AbstractMenuForm
                 $player->sendForm(new MoneySortedList());
                 break;
             case "ギルドの作成":
-                $player->sendForm();//ギルドの作成
+                if ($guildPlayer->getGuildId() !== GuildId::NO_GUILD) {
+                    $player->sendForm(new ErrorForm("既にギルドに参加しています\n新しく作るには今いるギルドを退出してください", $this));
+                    return;
+                }
+                $player->sendForm(new GuildCreateForm());//ギルドの作成
                 break;
         }
     }

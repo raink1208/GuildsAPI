@@ -84,7 +84,7 @@ class GuildManager
         return $this->guilds[$id] ?: null;
     }
 
-    public function createGuild(string $name, string $owner)
+    public function createGuild(string $name, string $owner): Guild
     {
         $config = Main::getInstance()->getConfigManager()->get(ConfigManager::NO_EDIT);
         $id = $config->get("GuildUsedIDLast") + 1;
@@ -97,6 +97,21 @@ class GuildManager
         $this->guilds[$id] = $guild;
 
         Main::getInstance()->getDatabase()->createGuildData($guild);
+
+        return $guild;
+    }
+
+    public function getGuildCreateNeedMoney(): int
+    {
+        $needMoney = Main::getInstance()->getConfigManager()->get(ConfigManager::SETTING)->get("GuildCreateNeedMoney");
+
+        if (!is_int($needMoney)) $needMoney = 100000;
+        return $needMoney;
+    }
+
+    public function nameExists(string $name): bool
+    {
+        return in_array($name, array_keys($this->nameList));
     }
 
     public function saveGuild(Guild $guild)
