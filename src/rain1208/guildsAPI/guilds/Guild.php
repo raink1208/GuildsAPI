@@ -47,6 +47,11 @@ class Guild
         return $this->name;
     }
 
+    public function getOwnerName(): string
+    {
+        return $this->owner;
+    }
+
     public function getGuildId(): GuildId
     {
         return $this->guildId;

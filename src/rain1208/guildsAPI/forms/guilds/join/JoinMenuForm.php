@@ -7,6 +7,7 @@ namespace rain1208\guildsAPI\forms\guilds\join;
 use dktapps\pmforms\MenuOption;
 use pocketmine\Player;
 use rain1208\guildsAPI\forms\addons\AbstractMenuForm;
+use rain1208\guildsAPI\forms\guilds\GuildSearchForm;
 use rain1208\guildsAPI\forms\lists\MoneySortedList;
 use rain1208\guildsAPI\forms\MainForm;
 
@@ -34,7 +35,7 @@ class JoinMenuForm extends AbstractMenuForm
 
         switch ($select) {
             case 0:
-                $player->sendForm();
+                $player->sendForm(new GuildSearchForm(true));
                 break;
             case 1:
                 $player->sendForm(new MoneySortedList(true));
