@@ -24,6 +24,13 @@ INSERT INTO guilds (id, name, level, exp) VALUES (:id, :name, :level, :exp);
 
         -- #}
 
+        -- #{ delete
+        -- #:guild_id int
+
+DELETE FROM guilds WHERE id=:guild_id;
+
+        -- #}
+
         -- #{ save
         -- #:guild_id int
         -- #:level int

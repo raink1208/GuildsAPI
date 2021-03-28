@@ -123,9 +123,7 @@ class Guild
 
     public function getAllGuildMember(): array
     {
-        $result[] = $this->owner;
-
-        $result += $this->members;
+        $result[] = array_merge($this->members,[$this->owner]);
 
         return $result;
     }
