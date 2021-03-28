@@ -11,6 +11,7 @@ use rain1208\guildsAPI\forms\ErrorForm;
 use rain1208\guildsAPI\forms\guilds\delete\GuildDeleteForm;
 use rain1208\guildsAPI\forms\guilds\leave\LeaveForm;
 use rain1208\guildsAPI\forms\guilds\memberList\ByPermissionMemberListForm;
+use rain1208\guildsAPI\forms\guilds\memberList\MemberListForm;
 use rain1208\guildsAPI\forms\MainForm;
 use rain1208\guildsAPI\guilds\GuildPlayer;
 use rain1208\guildsAPI\Main;
@@ -67,7 +68,11 @@ class GuildMenuForm extends AbstractMenuForm
                 $player->sendForm(new LeaveForm($guild));
                 break;
             case "プレイヤーの認証":
-                $player->sendForm();//
+                if ($guildPlayer->getPermission() !== GuildPermission::OWNER) {
+                    $player->sendForm(new ErrorForm("権限を持っていないのでこの機能を使えません"));
+                    return;
+                }
+                $player->sendForm(new MemberListForm($guild->getWait(), $this, true));
                 break;
             case "プレイヤーの設定":
                 $player->sendForm();
