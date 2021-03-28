@@ -3,6 +3,7 @@ main: rain1208\guildsAPI\Main
 version: 1.0.0
 api: 3.0.0
 author: rain1208
+load: POSTWORLD
 
 depend:
   - "EconomyAPI"
