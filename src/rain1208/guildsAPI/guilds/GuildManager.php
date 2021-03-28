@@ -101,6 +101,22 @@ class GuildManager
         return $guild;
     }
 
+    public function deleteGuild(Guild $guild)
+    {
+        $data = Main::getInstance()->getDatabase()->getGuildMember($guild->getGuildId());
+        $members = array_merge($data[0], $data[1], $data[2], $data[3]);
+
+        Main::getInstance()->getDatabase()->deleteGuildData($guild->getGuildId());
+
+        foreach ($members as $member) {
+            $player = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($member);
+            $player->setGuildId(GuildId::NO_GUILD);
+            $player->setPermission(GuildPermission::NO_DATA);
+            Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
+            $player->sendMessage("ギルドが削除されました");
+        }
+    }
+
     public function getGuildCreateNeedMoney(): int
     {
         $needMoney = Main::getInstance()->getConfigManager()->get(ConfigManager::SETTING)->get("GuildCreateNeedMoney");

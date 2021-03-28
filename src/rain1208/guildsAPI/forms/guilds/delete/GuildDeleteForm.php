@@ -45,5 +45,8 @@ class GuildDeleteForm extends AbstractCustomForm
             $player->sendForm(new ErrorForm("入力したギルド名が一致しませんでした", $this));
             return;
         }
+
+        Main::getInstance()->getGuildManager()->deleteGuild($this->guild);
+        $player->sendMessage($this->guild->getName()."を削除しました");
     }
 }
