@@ -88,6 +88,18 @@ class GuildPlayer
         return EconomyPlugin::myMoney($this->name);
     }
 
+    public function getInfoString(): string
+    {
+        $data = $this->getInfo();
+
+        $msg  = "プレイヤーのID: " . $data["name"] . "\n";
+        $msg .= "所持金: " . $data["money"] . "\n";
+        $msg .= "参加中のギルド: " . $data["guild"] . " ギルドID: " . $data["guildId"] . "\n";
+        $msg .= "ギルドの権限: " . $data["permission"];
+
+        return $msg;
+    }
+
     public function getInfo(): array
     {
         $data = [

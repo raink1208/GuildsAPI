@@ -128,6 +128,11 @@ class Guild
         return $result;
     }
 
+    public function getWait(): array
+    {
+        return $this->wait;
+    }
+
     /**
      * @param int $permission
      * @return GuildPlayer[]
