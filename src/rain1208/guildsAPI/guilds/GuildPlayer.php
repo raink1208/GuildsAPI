@@ -8,6 +8,7 @@ use rain1208\guildsAPI\Main;
 use rain1208\guildsAPI\models\GuildId;
 use rain1208\guildsAPI\utils\GuildPermission;
 use rain1208\guildsAPI\wrapper\EconomyPlugin;
+use rain1208\killLevel\KillLevelAPI;
 
 class GuildPlayer
 {
@@ -34,9 +35,7 @@ class GuildPlayer
         $this->guildId = new GuildId($data["guild_id"]);
         $this->permission = $data["permission"];
 
-        if ($data["name"] !== null) {
-            $this->setDisplayName($data["name"]);
-        }
+        $this->loadDisplayName();
     }
 
     public function getName(): string
@@ -73,14 +72,24 @@ class GuildPlayer
         }
     }
 
-    public function setDisplayName(string $guildName)
+    public function loadDisplayName()
     {
         $player = Main::getInstance()->getServer()->getPlayer($this->name);
+        if ($player === null) return;
 
-        if ($player !== null) {
-            $player->setDisplayName("[".$guildName."§r]" . $player->getName());
-            $player->setNameTag("[".$guildName."§r]" . $player->getName());
+        $name = $player->getName();
+
+        if (Main::getInstance()->getServer()->getPluginManager()->getPlugin("killLevel") !== null) {
+            $name = "<".(string)KillLevelAPI::getInstance()->getLevel($this->name)."Lv>" . $name;
         }
+
+        $guild = Main::getInstance()->getGuildManager()->getGuild($this->guildId);
+        if ($guild !== null) {
+            $name = "[".$guild->getName()."§r]" . $name;
+        }
+
+        $player->setDisplayName($name);
+        $player->setNameTag($name);
     }
 
     public function getMoney(): int
