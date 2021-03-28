@@ -123,9 +123,7 @@ class Guild
 
     public function getAllGuildMember(): array
     {
-        $result[] = array_merge($this->members,[$this->owner]);
-
-        return $result;
+        return array_merge($this->members,[$this->owner]);
     }
 
     public function getWait(): array
