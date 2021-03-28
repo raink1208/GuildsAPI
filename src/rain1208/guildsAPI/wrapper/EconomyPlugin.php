@@ -6,10 +6,7 @@ namespace rain1208\guildsAPI\wrapper;
 
 use onebone\economyapi\EconomyAPI;
 use pocketmine\Player;
-use pocketmine\utils\UUID;
 use rain1208\guildsAPI\guilds\GuildPlayer;
-use rain1208\guildsAPI\Main;
-use TypeError;
 
 class EconomyPlugin
 {
@@ -42,8 +39,6 @@ class EconomyPlugin
     {
         if ($player instanceof GuildPlayer) return $player->getName();
         if ($player instanceof Player) return $player->getName();
-        if (is_string($player)) return $player;
-
-        throw new TypeError();
+        return $player;
     }
 }
