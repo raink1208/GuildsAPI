@@ -50,6 +50,16 @@ class SQLiteDatabase
         );
     }
 
+    public function deleteGuildData(GuildId $guildId)
+    {
+        $this->db->executeGeneric(
+            "guildsql.guild.delete",
+            [
+                "guild_id" => $guildId->getValue()
+            ]
+        );
+    }
+
     public function saveGuildData(Guild $guild)
     {
         $this->db->executeChange(
