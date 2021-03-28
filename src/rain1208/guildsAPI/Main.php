@@ -9,6 +9,7 @@ use rain1208\guildsAPI\guilds\GuildManager;
 use rain1208\guildsAPI\guilds\GuildPlayerManager;
 use rain1208\guildsAPI\utils\ConfigManager;
 use rain1208\guildsAPI\utils\SQLiteDatabase;
+use rain1208\guildsAPI\wrapper\KillLevelEventListener;
 
 class Main extends PluginBase
 {
@@ -33,6 +34,10 @@ class Main extends PluginBase
         $this->configManager = new ConfigManager();
 
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+
+        if ($this->getServer()->getPluginManager()->getPlugin("killLevel") !== null) {
+            $this->getServer()->getPluginManager()->registerEvents(new KillLevelEventListener(), $this);
+        }
 
         $this->registerCommand();
     }
