@@ -27,10 +27,12 @@ class SQLiteDatabase
             ]
         );
 
-        $this->db->executeGeneric("guildsql.init.guilds");
-        $this->db->executeGeneric("guildsql.init.players");
-
         $file = $plugin->getDataFolder().$plugin->getConfig()->get("database")["sqlite"]["file"];
+
+        $db = new SQLite3($file,SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
+        $db->exec("CREATE TABLE IF NOT EXISTS guilds(id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL UNIQUE, level INTEGER NOT NULL, exp INTEGER NOT NULL)");
+        $db->exec("CREATE TABLE IF NOT EXISTS players(id TEXT PRIMARY KEY, guild_id INTEGER NOT NULL, permission INTEGER NOT NULL)");
+
         $this->syncDB = new SQLite3($file, SQLITE3_OPEN_READONLY);
     }
 
