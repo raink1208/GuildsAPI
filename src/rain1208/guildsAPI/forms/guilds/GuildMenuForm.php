@@ -36,7 +36,7 @@ class GuildMenuForm extends AbstractMenuForm
         }
 
         if ($player->getPermission() === GuildPermission::OWNER) {
-            $options[] = new MenuOption("プレイヤーの設定");
+            //$options[] = new MenuOption("プレイヤーの設定");
             $options[] = new MenuOption("ギルドの削除");
         }
 
