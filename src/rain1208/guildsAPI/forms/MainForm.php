@@ -47,7 +47,7 @@ class MainForm extends AbstractMenuForm
                 $player->sendForm(new MoneySortedList());
                 break;
             case "ギルドの作成":
-                if ($guildPlayer->getGuildId() !== GuildId::NO_GUILD) {
+                if ($guildPlayer->getGuildId()->getValue() !== GuildId::NO_GUILD) {
                     $player->sendForm(new ErrorForm("既にギルドに参加しています\n新しく作るには今いるギルドを退出してください", $this));
                     return;
                 }
