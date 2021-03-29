@@ -81,6 +81,8 @@ class GuildManager
             $id = $id->getValue();
         }
 
+        if ($id === -1) return null;
+
         return $this->guilds[$id] ?: null;
     }
 
