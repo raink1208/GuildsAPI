@@ -146,7 +146,7 @@ class SQLiteDatabase
 
     public function getGuildPlayerData(string $name): ?array
     {
-        $stmt = $this->syncDB->prepare("SELECT players.id, guild_id, permission, g.name FROM players left outer join guilds g on players.guild_id = g.id WHERE players.id=:name");
+        $stmt = $this->syncDB->prepare("SELECT id, guild_id, permission FROM players WHERE id=:name");
 
         $stmt->bindValue(":name", $name);
 
