@@ -4,11 +4,11 @@
 namespace rain1208\guildsAPI\wrapper;
 
 
-use rain1208\guildsAPI\EventListener;
+use pocketmine\event\Listener;
 use rain1208\guildsAPI\Main;
 use rain1208\killLevel\LevelUPEvent;
 
-class KillLevelEventListener extends EventListener
+class KillLevelEventListener implements Listener
 {
     public function onLevelUp(LevelUPEvent $event)
     {
