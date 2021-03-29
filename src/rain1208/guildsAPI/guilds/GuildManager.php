@@ -98,6 +98,14 @@ class GuildManager
         $this->nameList[$name] = $id;
         $this->guilds[$id] = $guild;
 
+        $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($owner);
+
+        if ($guildPlayer === null) return $guild;
+
+        $guildPlayer->setPermission(GuildPermission::OWNER);
+        $guildPlayer->setGuildId($guild->getGuildId()->getValue());
+        Main::getInstance()->getGuildPlayerManager()->savePlayer($guildPlayer);
+
         Main::getInstance()->getDatabase()->createGuildData($guild);
 
         return $guild;
