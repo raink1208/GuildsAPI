@@ -6,6 +6,7 @@ namespace rain1208\guildsAPI;
 
 use rain1208\guildsAPI\guilds\Guild;
 use rain1208\guildsAPI\guilds\GuildPlayer;
+use rain1208\guildsAPI\utils\StringUtil;
 
 class GuildsAPI
 {
@@ -20,6 +21,9 @@ class GuildsAPI
         return self::$instance;
     }
 
+    /**
+     * @return Guild[]
+     */
     public function getGuilds(): array
     {
         return Main::getInstance()->getGuildManager()->getGuilds();
@@ -28,6 +32,41 @@ class GuildsAPI
     public function getGuild($id): ?Guild
     {
         return Main::getInstance()->getGuildManager()->getGuild($id);
+    }
+
+    public function getGuildByName(string $name): ?Guild
+    {
+        if (in_array($name, Main::getInstance()->getGuildManager()->getNameList())) {
+            $id = Main::getInstance()->getGuildManager()->getNameList()[$name];
+            return $this->getGuild($id);
+        }
+        return null;
+    }
+
+    public function searchGuildByID(int $id): array
+    {
+        $result = [];
+
+        foreach ($this->getGuilds() as $guild) {
+            if ($guild->getGuildId()->getValue() === $id) {
+                $result[] = $guild;
+                continue;
+            }
+        }
+
+        return $result;
+    }
+
+    public function searchGuildByName(string $name): array
+    {
+        $result = [];
+
+        foreach ($this->getGuilds() as $guild) {
+            if (StringUtil::startWithIgnoreCase($guild->getName(), $name)) {
+                $result[] = $guild;
+            }
+        }
+        return $result;
     }
 
     public function getGuildPlayer(string $player): ?GuildPlayer
