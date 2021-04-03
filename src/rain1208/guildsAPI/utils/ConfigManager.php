@@ -19,7 +19,7 @@ class ConfigManager
         $f = Main::getInstance()->getDataFolder();
 
         $this->configs[self::NO_EDIT] = new Config($f."NO_EDIT.yml", Config::YAML, array("GuildUsedIDLast" => 0));
-        $this->configs[self::SETTING] = new Config($f."Setting.yml", Config::YAML, array("GuildCreateNeedMoney" => 100000));
+        $this->configs[self::SETTING] = new Config($f."Setting.yml", Config::YAML, array("GuildCreateNeedMoney" => 100000, "IntraGuildPVP" => false));
     }
 
     public function get(int $id): Config
