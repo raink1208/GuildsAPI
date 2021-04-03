@@ -131,6 +131,8 @@ class GuildManager
             Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
             $player->sendMessage("ギルドが削除されました");
         }
+
+        unset($this->guilds[$guild->getGuildId()->getValue()]);
     }
 
     public function getGuildCreateNeedMoney(): int
