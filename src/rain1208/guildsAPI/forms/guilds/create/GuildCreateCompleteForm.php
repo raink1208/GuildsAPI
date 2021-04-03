@@ -17,7 +17,7 @@ class GuildCreateCompleteForm extends AbstractCustomForm
         $title = "ギルド作成完了";
         $elements = [
             new Label("label", "ギルドを作成しました"),
-            new Label("label1", $guild->getGuildInfoString())
+            new Label("label1", "ギルド名: ".$guild->getName()." ギルドID: ". $guild->getGuildId()->getValue() ."\nギルドのオーナー: ".$guild->getOwnerName())
         ];
         parent::__construct($title, $elements);
     }
