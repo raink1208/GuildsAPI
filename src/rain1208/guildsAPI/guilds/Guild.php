@@ -72,7 +72,7 @@ class Guild
         Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
         Main::getInstance()->getGuildManager()->saveGuild($this);
 
-        $player->sendMessage($this->getName()."への参加申請を受け取りました");
+        $player->sendMessage($this->getName()."へ参加申請を送りました");
 
         $owner = $this->getMemberHasPermission(GuildPermission::OWNER);
         $admin = $this->getMemberHasPermission(GuildPermission::admin);
