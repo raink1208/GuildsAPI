@@ -44,6 +44,7 @@ class GuildManager
         $wait = $data[GuildPermission::wait];
 
         $this->guilds[$guildID] = new Guild(new GuildId($guildID), $name, new GuildLevel($level, $exp), $owner, $members, $wait);
+        $this->nameList[$name] = $guildID;
     }
 
     /** @return Guild[] */
