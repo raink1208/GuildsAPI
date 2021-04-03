@@ -72,7 +72,7 @@ class Guild
         Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
         Main::getInstance()->getGuildManager()->saveGuild($this);
 
-        $player->sendMessage($this->getName()."への参加申請を受け取りました");
+        $player->sendMessage($this->getName()."へ参加申請を送りました");
 
         $owner = $this->getMemberHasPermission(GuildPermission::OWNER);
         $admin = $this->getMemberHasPermission(GuildPermission::admin);
@@ -83,23 +83,21 @@ class Guild
         }
     }
 
-    public function accept(string $player)
+    public function accept(GuildPlayer $player)
     {
-        if (in_array($player, $this->wait)) {
-            $index = array_search($player, $this->wait);
+        if (in_array($player->getName(), $this->wait)) {
+            $index = array_search($player->getName(), $this->wait);
             array_splice($this->wait ,$index);
         }
 
-        $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player);
+        $player->setPermission(GuildPermission::member);
 
-        $guildPlayer->setPermission(GuildPermission::member);
+        $this->members[] = $player->getName();
 
-        $this->members[] = $player;
-
-        Main::getInstance()->getGuildPlayerManager()->savePlayer($guildPlayer);
+        Main::getInstance()->getGuildPlayerManager()->savePlayer($player);
         Main::getInstance()->getGuildManager()->saveGuild($this);
 
-        $this->broadcastMessage($player."がギルドに参加しました");
+        $this->broadcastMessage($player->getName()."がギルドに参加しました");
     }
 
     public function leave(GuildPlayer $player)

@@ -34,7 +34,7 @@ class JoinForm extends AbstractModalForm
         $guildPlayer = Main::getInstance()->getGuildPlayerManager()->getGuildPlayer($player->getName());
 
         if ($bool) {
-            if (!$guildPlayer->getGuildId()->equals(new GuildId(GuildId::NO_GUILD))) {
+            if ($guildPlayer->getGuildId()->getValue() !== GuildId::NO_GUILD) {
                 $player->sendForm(new ErrorForm("あなたはすでにギルドに参加しています", $this));
                 return;
             }
