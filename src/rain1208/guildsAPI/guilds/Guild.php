@@ -169,8 +169,11 @@ class Guild
     {
         $manager = Main::getInstance()->getGuildPlayerManager();
 
-        foreach ($this->members as $member) {
-            $manager->getGuildPlayer($member)->sendMessage($message);
+        $member = [$this->owner];
+        $member = array_merge($member, $this->members);
+
+        foreach ($member as $player) {
+            $manager->getGuildPlayer($player)->sendMessage($message);
         }
     }
 
