@@ -78,8 +78,8 @@ class Guild
         $admin = $this->getMemberHasPermission(GuildPermission::admin);
 
         /** @var GuildPlayer $player */
-        foreach (array_merge($owner, $admin) as $player) {
-            $player->sendMessage($player->getName()."がギルドに参加申請をしています");
+        foreach (array_merge($owner, $admin) as $member) {
+            $member->sendMessage($player->getName()."がギルドに参加申請をしています");
         }
     }
 
